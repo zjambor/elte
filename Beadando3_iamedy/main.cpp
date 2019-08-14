@@ -187,6 +187,7 @@ int main(int argc, char const* argv[])
 
 	std::cout << "Kész" << endl;
 	std::cout << "Kész" << endl;
+	std::cout << "Kész" << endl;
 
 	return 0;
 }
