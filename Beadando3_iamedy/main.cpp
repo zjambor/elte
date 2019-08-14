@@ -185,7 +185,7 @@ int main(int argc, char const* argv[])
 	auto duration = duration_cast<microseconds>(tp2 - tp1).count();
 	std::cout << "A program futasi ideje: " << duration / 1000.0 / 1000.0 << " sec." << endl;
 
-	std::cout << "A program futasi ideje: " << duration / 1000.0 / 1000.0 << " sec." << endl;
+	std::cout << "Kész" << endl;
 
 	return 0;
 }
