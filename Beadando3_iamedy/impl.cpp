@@ -471,7 +471,7 @@ FlightPath Map::get_shortest_flightpath() const
 
 void outputthread(Pipe<trader>& p, int count)
 {
-	ofile << "count: " << count << " thread: " << std::this_thread::get_id() << " " << '\n';
+	//ofile << "count: " << count << " thread: " << std::this_thread::get_id() << " " << '\n';
 	for (auto i = 0; i < count; ++i)
 	{
 		trader tr = p.pop();
@@ -570,7 +570,7 @@ bool have_sellable(stock& s)
 
 void Map::city_trade(const City& city, int count, Pipe<trader>& from, Pipe<trader>& to) const
 {
-	std::unique_lock<std::mutex> lk(write_mutex);
-	std::cout << "City: " << city << " count: " << count << " thread: " << std::this_thread::get_id() << " " << std::endl;
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	//std::unique_lock<std::mutex> lk(write_mutex);
+	//std::cout << "City: " << city << " count: " << count << " thread: " << std::this_thread::get_id() << " " << std::endl;
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
 }
