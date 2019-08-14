@@ -503,7 +503,7 @@ void Map::calculate_trades(std::vector<trader>& traders)
 	
 	auto c = traders.size();
 	//Pipe<trader>& p = pipes[0];
-	auto& p = pipes[0];
+	auto& p = pipes[C];
 	auto ft = [&]() { outputthread(p, c); };
 	std::thread t(ft);
 	
@@ -573,4 +573,46 @@ void Map::city_trade(const City& city, int count, Pipe<trader>& from, Pipe<trade
 	//std::unique_lock<std::mutex> lk(write_mutex);
 	//std::cout << "City: " << city << " count: " << count << " thread: " << std::this_thread::get_id() << " " << std::endl;
 	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+
+	auto tiles = get_tiles_in_radius(city, 2);
+	std::vector<int> city_useful_fields = { 0, 0, 0, 0, 0 };
+
+	for (auto tile : tiles)
+	{
+		if (is_useful_field(tile.second))
+			city_useful_fields[get_field_index(tile.second)]++;
+	}
+
+	//std::unique_lock<std::mutex> lk(write_mutex);
+	//std::mutex mu;
+	write_mutex.lock();
+	std::cout << "A varos hasznos keszlete: ";
+	for (auto t : city_useful_fields)
+	{
+		std::cout << t << " ";
+	}
+	std::cout << std::endl;
+	write_mutex.unlock();
+
+	trader tr;
+	std::vector<int> trader_goods;
+	for (auto i = 0; i < count; ++i)
+	{		
+		tr = from.pop();
+		auto mi = tr[tr.size() - 1];
+		for (auto tr_field : tr)
+		{
+			if (tr_field > mi)
+				trader_goods.push_back(tr_field);
+		}
+		write_mutex.lock();
+		std::cout << "A trader hasznos keszlete: ";
+		for (auto t : trader_goods)
+		{
+			std::cout << t << " ";
+		}
+		std::cout << std::endl;
+		write_mutex.unlock();
+		to.push(tr);
+	}		
 }

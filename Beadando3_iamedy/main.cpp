@@ -34,7 +34,7 @@ int compute(const Coordinate& coord, const int& r, const Map& m)
 
 void mainprog()
 {
-	string file = "D:\\world3.map";
+	string file = "D:\\world.map";
 	ifstream ifile(file.c_str());
 	/*string outputfile = "D:\\output.txt";
 	ofstream ofile(outputfile.c_str(), ios::out);*/
