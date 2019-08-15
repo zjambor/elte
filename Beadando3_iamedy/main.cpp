@@ -83,6 +83,7 @@ void mainprog()
 
 	//m.print();
 
+	/*
 	auto map = m.get_map();
 	for (auto itr = map.begin(); itr != map.end(); ++itr)
 	{
@@ -90,10 +91,11 @@ void mainprog()
 		for (auto itr2 = col.begin(); itr2 != col.end(); ++itr2)
 		{
 			auto field = (*itr2);
-			//cout << field << " (" << field_value(field) << ")\t";
+			cout << field << " (" << field_value(field) << ")\t";
 		}
-		//cout << endl;
+		cout << endl;
 	}
+	*/
 
 	ifile.close();
 	//ofile.close();

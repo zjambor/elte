@@ -477,13 +477,11 @@ void outputthread(Pipe<trader>& p, int count)
 		trader tr = p.pop();
 
 		ofile << "(" << tr[0];
-		for (auto i = 1; i < 6; ++i)
+		for (auto i = 1; i < tr.size() - 1; ++i)
 		{
-			//std::cout << " " << tr[i];
-			ofile<< " " << tr[i];
+			ofile << " " << tr[i];
 		}
 		ofile << ")" << '\n';
-
 	}
 }
 
@@ -570,24 +568,21 @@ bool have_sellable(stock& s)
 
 void Map::city_trade(const City& city, int count, Pipe<trader>& from, Pipe<trader>& to) const
 {
-	//std::unique_lock<std::mutex> lk(write_mutex);
 	//std::cout << "City: " << city << " count: " << count << " thread: " << std::this_thread::get_id() << " " << std::endl;
 	std::this_thread::sleep_for(std::chrono::milliseconds(300));
 
 	auto tiles = get_tiles_in_radius(city, 2);
-	std::vector<int> city_useful_fields = { 0, 0, 0, 0, 0 };
+	stock Stock = { 0, 0, 0, 0, 0 };
 
 	for (auto tile : tiles)
 	{
 		if (is_useful_field(tile.second))
-			city_useful_fields[get_field_index(tile.second)]++;
+			Stock[get_field_index(tile.second)]++;
 	}
 
-	//std::unique_lock<std::mutex> lk(write_mutex);
-	//std::mutex mu;
 	write_mutex.lock();
-	std::cout << "A varos hasznos keszlete: ";
-	for (auto t : city_useful_fields)
+	std::cout << city << " A varos hasznos keszlete: ";
+	for (auto t : Stock)
 	{
 		std::cout << t << " ";
 	}
@@ -595,24 +590,48 @@ void Map::city_trade(const City& city, int count, Pipe<trader>& from, Pipe<trade
 	write_mutex.unlock();
 
 	trader tr;
-	std::vector<int> trader_goods;
+
 	for (auto i = 0; i < count; ++i)
 	{		
 		tr = from.pop();
-		auto mi = tr[tr.size() - 1];
-		for (auto tr_field : tr)
-		{
-			if (tr_field > mi)
-				trader_goods.push_back(tr_field);
-		}
 		write_mutex.lock();
-		std::cout << "A trader hasznos keszlete: ";
-		for (auto t : trader_goods)
+		std::cout << city << ": A trader hasznos keszlete: ";
+		for (auto t : tr)
 		{
 			std::cout << t << " ";
 		}
 		std::cout << std::endl;
 		write_mutex.unlock();
+		auto mi = tr[tr.size() - 1];
+		for (auto i = 0; i < Stock.size(); ++i)
+		{
+			auto city_raw_material = Stock[i];
+			if (city_raw_material == 0)
+			{
+				auto tr_raw_material = tr[i];
+				if (tr_raw_material > 0)
+				{
+					for (auto k = 0; k < Stock.size(); ++k)
+					{
+						if (Stock[k] > mi)
+						{
+							// csere: 
+							Stock[i]++; tr[i]--; Stock[k] -= mi; tr[k] += mi;
+							break;
+						}
+					}
+				}
+			}
+		}
+		write_mutex.lock();
+		std::cout << city << " A varos uj keszlete: ";
+		for (auto t : Stock)
+		{
+			std::cout << t << " ";
+		}
+		std::cout << std::endl;
+		write_mutex.unlock();
+
 		to.push(tr);
-	}		
+	}
 }
