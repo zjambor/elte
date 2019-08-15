@@ -602,6 +602,7 @@ void Map::city_trade(const City& city, int count, Pipe<trader>& from, Pipe<trade
 		}
 		std::cout << std::endl;
 		write_mutex.unlock();
+
 		auto mi = tr[tr.size() - 1];
 		for (auto i = 0; i < Stock.size(); ++i)
 		{
@@ -623,6 +624,7 @@ void Map::city_trade(const City& city, int count, Pipe<trader>& from, Pipe<trade
 				}
 			}
 		}
+
 		write_mutex.lock();
 		std::cout << city << " A varos uj keszlete: ";
 		for (auto t : Stock)
